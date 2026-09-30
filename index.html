@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Bagging Attention Test</title>
+<style>
+  :root{
+    --bg:#f5f7fb;
+    --card:#ffffff;
+    --text:#172033;
+    --muted:#6b7280;
+    --line:#e5e7eb;
+    --good:#15803d;
+    --bad:#b91c1c;
+    --accent:#d90429;
+    --accent2:#9d0208;
+    --soft:#fff1f2;
+    --warn:#b45309;
+  }
+  *{box-sizing:border-box}
+  html { color-scheme: light; }
+  body{
+    margin:0;
+    font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:linear-gradient(180deg,#fafbff 0%,var(--bg) 100%);
+    color:#172033 !important;
+    -webkit-text-fill-color:#172033;
+  }
+  h1,h2,h3,h4,p,li,label,td,th,span,div { color:inherit; }
+  .card,.panel,.order-card,.metric,.check { color:#172033; -webkit-text-fill-color:#172033; }
+  input,select {
+    color:#172033 !important;
+    -webkit-text-fill-color:#172033 !important;
+    background-color:#ffffff !important;
+  }
+  button { -webkit-text-fill-color:currentColor; }
+  .btn-primary,.timer,.logo { color:#ffffff !important; -webkit-text-fill-color:#ffffff !important; }
+  .btn-good { color:#166534 !important; -webkit-text-fill-color:#166534 !important; }
+  .btn-bad { color:#991b1b !important; -webkit-text-fill-color:#991b1b !important; }
+  .btn-secondary,.btn-outline { color:#111827 !important; -webkit-text-fill-color:#111827 !important; }
+  .sub { color:#6b7280 !important; -webkit-text-fill-color:#6b7280 !important; }
+  .pill { color:#334155 !important; -webkit-text-fill-color:#334155 !important; }
+  .notice { color:#9a3412 !important; -webkit-text-fill-color:#9a3412 !important; }
+  .manager-note,.footer-note { color:#475569 !important; -webkit-text-fill-color:#475569 !important; }
+  .app{max-width:1050px;margin:0 auto;padding:22px}
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    margin-bottom:18px;
+  }
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{
+    width:44px;height:44px;border-radius:14px;background:var(--accent);
+    display:grid;place-items:center;color:white;font-weight:900;font-size:22px;
+    box-shadow:0 8px 22px rgba(217,4,41,.18)
+  }
+  h1{font-size:24px;margin:0}
+  .sub{color:var(--muted);font-size:14px;margin-top:3px}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:18px;
+    box-shadow:0 8px 24px rgba(15,23,42,.06);padding:22px;
+  }
+  .hidden{display:none!important}
+  .grid{display:grid;gap:16px}
+  .grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  @media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}.app{padding:14px}}
+  label{display:block;font-weight:700;margin-bottom:6px}
+  input,select{
+    width:100%;padding:13px 14px;border:1px solid #cbd5e1;border-radius:12px;
+    font-size:16px;background:white;
+  }
+  button{
+    border:0;border-radius:12px;padding:13px 18px;font-size:16px;font-weight:800;
+    cursor:pointer;transition:.15s transform ease,.15s opacity ease;
+  }
+  button:active{transform:scale(.98)}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-secondary{background:#eef2f7;color:#111827}
+  .btn-good{background:#dcfce7;color:#166534;border:1px solid #bbf7d0}
+  .btn-bad{background:#fee2e2;color:#991b1b;border:1px solid #fecaca}
+  .btn-outline{background:#fff;border:1px solid #cbd5e1;color:#111827}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap}
+  .hero{padding:28px}
+  .hero h2{font-size:34px;margin:0 0 10px}
+  .hero p{color:var(--muted);font-size:17px;line-height:1.5}
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;background:#f1f5f9;border-radius:999px;
+    padding:7px 10px;font-size:13px;font-weight:800;color:#334155
+  }
+  .stage-head{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px
+  }
+  .stage-title{font-size:24px;font-weight:900}
+  .timer{
+    font-variant-numeric:tabular-nums;font-size:26px;font-weight:900;
+    min-width:90px;text-align:center;padding:8px 12px;border-radius:12px;background:#111827;color:#fff
+  }
+  .progress{
+    height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden;margin-bottom:18px
+  }
+  .progress > div{height:100%;background:var(--accent);width:0%;transition:width .2s}
+  .order-card{
+    border:1px solid var(--line);border-radius:16px;padding:18px;background:#fbfcfe
+  }
+  .order-number{font-size:13px;color:var(--muted);font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+  .order-card h3{margin:6px 0 12px;font-size:22px}
+  .items{margin:0;padding-left:20px;line-height:1.75}
+  .compare{
+    display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:15px
+  }
+  @media(max-width:760px){.compare{grid-template-columns:1fr}}
+  .panel{
+    border:1px solid var(--line);border-radius:14px;padding:16px;background:white
+  }
+  .panel h4{margin:0 0 10px}
+  .checklist{display:grid;gap:8px;margin-top:14px}
+  .check{
+    display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);
+    border-radius:10px;background:#fff;cursor:pointer
+  }
+  .check input{width:auto}
+  .notice{
+    padding:14px 16px;border-radius:12px;background:#fff7ed;border:1px solid #fed7aa;
+    color:#9a3412;font-weight:800;margin:14px 0
+  }
+  .memory{
+    border:2px dashed #f59e0b;background:#fffbeb;border-radius:14px;padding:18px;
+    font-size:18px;line-height:1.6
+  }
+  .big-choice{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+  .big-choice button{font-size:22px;padding:24px}
+  .score{
+    font-size:52px;font-weight:1000;line-height:1;margin:6px 0
+  }
+  .metric{
+    border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff
+  }
+  .metric .value{font-size:28px;font-weight:900}
+  .metric .label{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:800}
+  table{width:100%;border-collapse:collapse;margin-top:10px}
+  th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left}
+  th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  .tag-good{color:var(--good);font-weight:900}
+  .tag-bad{color:var(--bad);font-weight:900}
+  .footer-note{font-size:13px;color:var(--muted);line-height:1.5;margin-top:16px}
+  .interrupt{
+    position:fixed;inset:0;background:rgba(15,23,42,.72);display:grid;place-items:center;z-index:50;padding:20px
+  }
+  .interrupt .box{
+    max-width:560px;width:100%;background:white;border-radius:20px;padding:28px;box-shadow:0 20px 80px rgba(0,0,0,.35)
+  }
+  .interrupt h2{margin-top:0;font-size:30px}
+  .manager-note{font-size:13px;color:#475569;background:#f8fafc;border:1px solid var(--line);padding:12px;border-radius:10px}
+</style>
+</head>
+<body>
+
+<div id="storeGate" class="interrupt">
+  <div class="box">
+    <div class="pill">STORE ACCESS</div>
+    <h2>Bagging Attention Test</h2>
+    <p style="font-size:17px;line-height:1.5;color:#475569!important;-webkit-text-fill-color:#475569!important">
+      Enter the store access code to continue.
+    </p>
+    <input id="storeCode" type="password" inputmode="numeric" maxlength="5"
+      placeholder="Store code" autocomplete="off"
+      onkeydown="if(event.key==='Enter')verifyStoreCode()" />
+    <div id="storeCodeError" class="hidden"
+      style="margin-top:10px;color:#b91c1c!important;-webkit-text-fill-color:#b91c1c!important;font-weight:800">
+      Incorrect store code.
+    </div>
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn-primary" onclick="verifyStoreCode()">Continue</button>
+    </div>
+  </div>
+</div>
+<div id="mainApp" class="app hidden">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">B</div>
+      <div>
+        <h1>Bagging Attention Test</h1>
+        <div class="sub">Accuracy • Speed • Working Memory • Detail Recognition</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div id="topStatus" class="pill">Ready</div>
+      <button class="btn-outline" style="padding:8px 11px;font-size:13px" onclick="lockStore()">Lock</button>
+    </div>
+  </div>
+
+  <section id="startScreen" class="card hero">
+    <div class="pill">12–15 minute assessment</div>
+    <h2>Bagging Attention-to-Detail Test</h2>
+    <p>
+      This test measures how well someone notices small order differences while working quickly.
+      It includes order matching, rapid decisions, interruptions, and memory recall.
+    </p>
+    <div class="grid grid2" style="margin:22px 0">
+      <div>
+        <label for="name">Team Member</label>
+        <input id="name" placeholder="Enter name" />
+      </div>
+      <div>
+        <label for="mode">Test Mode</label>
+        <select id="mode">
+          <option value="standard">Standard</option>
+          <option value="hard">Hard</option>
+        </select>
+      </div>
+    </div>
+    <div class="manager-note">
+      Manager note: use this as one readiness indicator alongside coached bagging performance.
+      It is not designed to be the sole basis for employment decisions.
+    </div>
+    <div class="btn-row" style="margin-top:18px">
+      <button class="btn-primary" onclick="startTest()">Start Test</button>
+      <button class="btn-secondary" onclick="openManagerLogin()">Manager Dashboard</button>
+    </div>
+  </section>
+
+  <section id="testScreen" class="hidden">
+    <div class="card">
+      <div class="stage-head">
+        <div>
+          <div id="stageKicker" class="sub">Section</div>
+          <div id="stageTitle" class="stage-title">Spot the Error</div>
+        </div>
+        <div id="timer" class="timer">00:00</div>
+      </div>
+      <div class="progress"><div id="progressBar"></div></div>
+      <div id="questionArea"></div>
+    </div>
+  </section>
+
+  <section id="resultsScreen" class="hidden">
+    <div class="card">
+      <div class="sub">Final Result</div>
+      <h2 id="resultName" style="font-size:30px;margin:4px 0 8px">Team Member</h2>
+      <div id="scoreValue" class="score">0%</div>
+      <div id="scoreLabel" class="sub">Overall attention score</div>
+
+      <div class="grid grid3" style="margin-top:22px">
+        <div class="metric"><div id="accuracyMetric" class="value">0%</div><div class="label">Accuracy</div></div>
+        <div class="metric"><div id="falseMetric" class="value">0</div><div class="label">False Alarms</div></div>
+        <div class="metric"><div id="speedMetric" class="value">0.0s</div><div class="label">Avg Decision Time</div></div>
+      </div>
+
+      <div class="grid grid2" style="margin-top:16px">
+        <div class="metric"><div id="memoryMetric" class="value">0%</div><div class="label">Memory / Interruptions</div></div>
+        <div class="metric"><div id="detailMetric" class="value">0%</div><div class="label">Detail Recognition</div></div>
+      </div>
+
+      <h3 style="margin-top:26px">Section Breakdown</h3>
+      <table>
+        <thead><tr><th>Section</th><th>Correct</th><th>Total</th><th>Accuracy</th></tr></thead>
+        <tbody id="sectionTable"></tbody>
+      </table>
+
+      <h3 style="margin-top:26px">Detail Types</h3>
+      <table>
+        <thead><tr><th>Detail</th><th>Correct</th><th>Total</th><th>Accuracy</th></tr></thead>
+        <tbody id="detailTable"></tbody>
+      </table>
+
+      <div class="btn-row" style="margin-top:22px">
+        <button class="btn-primary" onclick="downloadResults()">Download Results</button>
+        <button class="btn-secondary" onclick="resetTest()">New Test</button>
+        <button class="btn-outline" onclick="openManagerLogin()">Manager Dashboard</button>
+      </div>
+      <div class="footer-note">
+        Recommended interpretation: focus on the pattern of misses, false alarms, and response speed.
+        A lower score in one area can identify what should be coached before solo bagging.
+      </div>
+    </div>
+  </section>
+
+  <section id="managerScreen" class="hidden">
+    <div class="card">
+      <div class="stage-head">
+        <div>
+          <div class="sub">Manager Access</div>
+          <div class="stage-title">Test Score Dashboard</div>
+        </div>
+        <button class="btn-secondary" onclick="closeManagerDashboard()">Back</button>
+      </div>
+
+      <div class="grid grid3" style="margin:18px 0">
+        <div class="metric"><div id="dashTests" class="value">0</div><div class="label">Tests Completed</div></div>
+        <div class="metric"><div id="dashAverage" class="value">—</div><div class="label">Average Score</div></div>
+        <div class="metric"><div id="dashAccuracy" class="value">—</div><div class="label">Average Accuracy</div></div>
+      </div>
+
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Team Member</th><th>Date</th><th>Mode</th><th>Score</th>
+              <th>Accuracy</th><th>False Alarms</th><th>Avg Time</th><th>Memory</th>
+            </tr>
+          </thead>
+          <tbody id="managerTable"></tbody>
+        </table>
+      </div>
+
+      <div id="noScores" class="notice hidden">No test scores have been saved on this device yet.</div>
+
+      <div class="btn-row" style="margin-top:20px">
+        <button class="btn-primary" onclick="exportAllScores()">Export All Scores</button>
+        <button class="btn-outline" onclick="clearAllScores()">Clear Saved Scores</button>
+      </div>
+      <div class="footer-note">
+        Scores are stored in this browser on this device. If the test is opened on a different iPad or computer,
+        that device will have its own score history.
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="managerLoginModal" class="interrupt hidden">
+  <div class="box">
+    <div class="pill">MANAGER ACCESS</div>
+    <h2>Enter Manager Code</h2>
+    <input id="managerCode" type="password" inputmode="numeric" maxlength="5"
+      placeholder="Manager code" onkeydown="if(event.key==='Enter')verifyManagerCode()" />
+    <div id="managerError" class="hidden" style="margin-top:10px;color:#b91c1c!important;-webkit-text-fill-color:#b91c1c!important;font-weight:800">
+      Incorrect code.
+    </div>
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn-primary" onclick="verifyManagerCode()">Open Dashboard</button>
+      <button class="btn-secondary" onclick="closeManagerLogin()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div id="interruptModal" class="interrupt hidden">
+  <div class="box">
+    <div class="pill">INTERRUPTION</div>
+    <h2>Order Change</h2>
+    <p id="interruptText" style="font-size:20px;line-height:1.5"></p>
+    <button class="btn-primary" onclick="dismissInterrupt()">Got it — continue</button>
+  </div>
+</div>
+
+<script>
+
+const STORE_ACCESS_CODE = "01911";
+const STORE_ACCESS_SESSION_KEY = "baggingStoreAccessGranted";
+
+function verifyStoreCode(){
+  const input=document.getElementById("storeCode");
+  const error=document.getElementById("storeCodeError");
+  if(input.value === STORE_ACCESS_CODE){
+    try{ sessionStorage.setItem(STORE_ACCESS_SESSION_KEY,"yes"); }catch(e){}
+    document.getElementById("storeGate").classList.add("hidden");
+    document.getElementById("mainApp").classList.remove("hidden");
+    error.classList.add("hidden");
+    input.value="";
+    setTimeout(()=>document.getElementById("name")?.focus(),50);
+  }else{
+    error.classList.remove("hidden");
+    input.select();
+  }
+}
+
+function initializeStoreGate(){
+  let granted=false;
+  try{ granted=sessionStorage.getItem(STORE_ACCESS_SESSION_KEY)==="yes"; }catch(e){}
+  if(granted){
+    document.getElementById("storeGate").classList.add("hidden");
+    document.getElementById("mainApp").classList.remove("hidden");
+  }else{
+    document.getElementById("storeGate").classList.remove("hidden");
+    document.getElementById("mainApp").classList.add("hidden");
+    setTimeout(()=>document.getElementById("storeCode")?.focus(),50);
+  }
+}
+
+window.addEventListener("DOMContentLoaded", initializeStoreGate);
+
+const baseQuestions = [
+  {
+    section:"Spot the Errors", type:"multi", seconds:45,
+    order:["CFA Sandwich — No Pickles","Medium Fry","8ct Nuggets","Polynesian","Sweet Tea"],
+    bag:["CFA Sandwich — Regular","Medium Fry","8ct Nuggets","Polynesian","BBQ","Sweet Tea"],
+    options:["Sandwich modification","Fry size","Nugget count","Extra BBQ sauce","Drink"],
+    correct:["Sandwich modification","Extra BBQ sauce"],
+    detail:["modification","sauce"]
+  },
+  {
+    section:"Spot the Errors", type:"multi", seconds:40,
+    order:["Spicy Deluxe","Pepper Jack","Large Fry","Coke Zero","CFA Sauce ×2"],
+    bag:["Spicy Deluxe","Pepper Jack","Large Fry","Coke Zero","CFA Sauce ×2"],
+    options:["Entrée","Cheese","Fry size","Drink","Sauce quantity","No errors"],
+    correct:["No errors"],
+    detail:["correct-order"]
+  },
+  {
+    section:"Order Matching", type:"binary", seconds:24,
+    order:["12ct Nuggets","Large Fry","Mac & Cheese","CFA Sauce ×3"],
+    bag:["12ct Nuggets","Large Fry","Mac & Cheese","CFA Sauce ×2"],
+    correctBinary:false,
+    detail:["quantity","sauce"]
+  },
+  {
+    section:"Order Matching", type:"binary", seconds:24,
+    order:["Grilled Chicken Club","Colby Jack","Medium Fry","Unsweet Tea"],
+    bag:["Grilled Chicken Club","American","Medium Fry","Unsweet Tea"],
+    correctBinary:false,
+    detail:["cheese"]
+  },
+  {
+    section:"Order Matching", type:"binary", seconds:22,
+    order:["8ct Nuggets","Medium Fry","Fruit Cup","Polynesian ×2"],
+    bag:["8ct Nuggets","Medium Fry","Fruit Cup","Polynesian ×2"],
+    correctBinary:true,
+    detail:["correct-order"]
+  },
+  {
+    section:"Rapid Fire", type:"binary", seconds:12,
+    order:["CFA Deluxe","American","Large Fry"],
+    bag:["CFA Deluxe","American","Medium Fry"],
+    correctBinary:false,
+    detail:["size"]
+  },
+  {
+    section:"Rapid Fire", type:"binary", seconds:12,
+    order:["Spicy Sandwich — No Pickles","Medium Fry","CFA Sauce"],
+    bag:["Spicy Sandwich — No Pickles","Medium Fry","CFA Sauce"],
+    correctBinary:true,
+    detail:["correct-order"]
+  },
+  {
+    section:"Rapid Fire", type:"binary", seconds:12,
+    order:["Grilled Nuggets 8ct","Fruit Cup","Water"],
+    bag:["Nuggets 8ct","Fruit Cup","Water"],
+    correctBinary:false,
+    detail:["entrée-type"]
+  },
+  {
+    section:"Rapid Fire", type:"binary", seconds:12,
+    order:["CFA Sandwich","Large Fry","Honey Roasted BBQ ×2"],
+    bag:["CFA Sandwich","Large Fry","Honey Roasted BBQ ×3"],
+    correctBinary:false,
+    detail:["quantity","sauce"]
+  },
+  {
+    section:"Rapid Fire", type:"binary", seconds:12,
+    order:["Spicy Deluxe","Pepper Jack","Large Mac & Cheese","Dr Pepper"],
+    bag:["Spicy Deluxe","Pepper Jack","Large Mac & Cheese","Dr Pepper"],
+    correctBinary:true,
+    detail:["correct-order"]
+  },
+  {
+    section:"Rapid Fire", type:"binary", seconds:12,
+    order:["CFA Sandwich","Medium Fry","Cookie"],
+    bag:["CFA Sandwich","Medium Fry"],
+    correctBinary:false,
+    detail:["missing-item"]
+  },
+];
+
+const additionalQuestions = [
+  {
+    section:"Spot the Errors", type:"multi", seconds:42,
+    order:["CFA Deluxe — No Tomato","American","Large Fry","Lemonade","CFA Sauce ×2"],
+    bag:["CFA Deluxe — Regular","American","Large Fry","Lemonade","CFA Sauce ×2"],
+    options:["Entrée modification","Cheese","Fry size","Drink","Sauce quantity","No errors"],
+    correct:["Entrée modification"],
+    detail:["modification"]
+  },
+  {
+    section:"Spot the Errors", type:"multi", seconds:42,
+    order:["12ct Nuggets","Medium Mac & Cheese","Fruit Cup","Polynesian ×2"],
+    bag:["8ct Nuggets","Medium Mac & Cheese","Fruit Cup","Polynesian ×3"],
+    options:["Nugget count","Mac & Cheese size","Fruit Cup","Sauce quantity","No errors"],
+    correct:["Nugget count","Sauce quantity"],
+    detail:["quantity","sauce"]
+  },
+  {
+    section:"Order Matching", type:"binary", seconds:22,
+    order:["Spicy Sandwich","Large Fry","Chocolate Chunk Cookie","Sweet Tea"],
+    bag:["Spicy Sandwich","Large Fry","Chocolate Chunk Cookie","Sweet Tea"],
+    correctBinary:true,
+    detail:["correct-order"]
+  },
+  {
+    section:"Order Matching", type:"binary", seconds:22,
+    order:["CFA Deluxe","Colby Jack","Medium Fry","Dr Pepper"],
+    bag:["CFA Deluxe","Colby Jack","Medium Fry","Diet Dr Pepper"],
+    correctBinary:false,
+    detail:["drink"]
+  },
+  {
+    section:"Order Matching", type:"binary", seconds:22,
+    order:["Grilled Chicken Sandwich — No Tomato","Medium Fruit Cup","Water"],
+    bag:["Grilled Chicken Sandwich — No Tomato","Medium Fruit Cup","Water"],
+    correctBinary:true,
+    detail:["correct-order"]
+  },
+  {
+    section:"Order Matching", type:"binary", seconds:22,
+    order:["8ct Nuggets","Large Fry","Mac & Cheese","CFA Sauce ×2"],
+    bag:["8ct Nuggets","Large Fry","Mac & Cheese"],
+    correctBinary:false,
+    detail:["missing-item","sauce"]
+  },
+  {
+    section:"Rapid Fire", type:"binary", seconds:12,
+    order:["Spicy Deluxe","American","Medium Fry"],
+    bag:["Spicy Deluxe","American","Medium Fry"],
+    correctBinary:true,
+    detail:["correct-order"]
+  },
+  {
+    section:"Rapid Fire", type:"binary", seconds:12,
+    order:["12ct Nuggets","Large Fry","Polynesian ×2"],
+    bag:["12ct Nuggets","Large Fry","Polynesian ×1"],
+    correctBinary:false,
+    detail:["quantity","sauce"]
+  },
+  {
+    section:"Rapid Fire", type:"binary", seconds:12,
+    order:["Grilled Chicken Club","Pepper Jack","Fruit Cup"],
+    bag:["Grilled Chicken Club","Pepper Jack","Fruit Cup"],
+    correctBinary:true,
+    detail:["correct-order"]
+  },
+  {
+    section:"Rapid Fire", type:"binary", seconds:12,
+    order:["CFA Sandwich — No Pickles","Large Fry","Cookie"],
+    bag:["CFA Sandwich — No Pickles","Large Fry","Brownie"],
+    correctBinary:false,
+    detail:["item-swap"]
+  }
+];
+
+const hardExtras = [
+  {
+    section:"Rapid Fire", type:"binary", seconds:10,
+    order:["Spicy Deluxe","Colby Jack","Large Fry","Diet Coke"],
+    bag:["Spicy Deluxe","Pepper Jack","Large Fry","Diet Coke"],
+    correctBinary:false,
+    detail:["cheese"]
+  },
+  {
+    section:"Rapid Fire", type:"binary", seconds:10,
+    order:["12ct Grilled Nuggets","Medium Fruit Cup","CFA Sauce ×2"],
+    bag:["12ct Grilled Nuggets","Small Fruit Cup","CFA Sauce ×2"],
+    correctBinary:false,
+    detail:["size"]
+  },
+  {
+    section:"Rapid Fire", type:"binary", seconds:10,
+    order:["CFA Deluxe — No Tomato","American","Large Fry"],
+    bag:["CFA Deluxe — No Tomato","American","Large Fry"],
+    correctBinary:true,
+    detail:["correct-order"]
+  }
+];
+
+const guestNames = ["Bella","Noah","Mia","Ethan","Ava","Liam","Sofia","Lucas","Emma","Mason","Chloe","Henry","Grace","Owen","Lily","Jack","Olivia","Elijah","Zoey","Caleb","Natalie","Wyatt","Ella","Logan","Ruby","Levi"];
+let questions = [];
+let index = 0;
+let timerId = null;
+let secondsLeft = 0;
+let questionStart = 0;
+let results = [];
+let memoryAnswers = [];
+let interrupted = false;
+
+const memoryPrompt = [
+  "Maya needs 3 CFA sauces.",
+  "Jordan has a large fry.",
+  "Alex has a milkshake."
+];
+
+function shuffle(arr){
+  return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+}
+
+function startTest(){
+  const name = document.getElementById('name').value.trim();
+  if(!name){ alert("Enter the team member's name first."); return; }
+
+  const mode = document.getElementById('mode').value;
+  questions = [...baseQuestions, ...additionalQuestions];
+  if(mode === "hard") questions.push(...hardExtras);
+
+  // Keep Spot the Errors first, shuffle matching/rapid within their sections.
+  const spot = questions.filter(q=>q.section==="Spot the Errors");
+  const match = shuffle(questions.filter(q=>q.section==="Order Matching"));
+  const rapid = shuffle(questions.filter(q=>q.section==="Rapid Fire"));
+  questions = [...spot, ...match, ...rapid];
+  questions.forEach((q,i)=> q.guest = guestNames[i % guestNames.length]);
+
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('testScreen').classList.remove('hidden');
+  document.getElementById('topStatus').textContent = "In Progress";
+
+  showMemoryIntro();
+}
+
+function showMemoryIntro(){
+  clearInterval(timerId);
+  document.getElementById('stageKicker').textContent = "Before Section 1";
+  document.getElementById('stageTitle').textContent = "Memory Challenge";
+  document.getElementById('timer').textContent = "00:20";
+  document.getElementById('progressBar').style.width = "0%";
+  document.getElementById('questionArea').innerHTML = `
+    <div class="memory">
+      <strong>Memorize these details. Do not write them down.</strong><br><br>
+      ${memoryPrompt.map(x=>"• "+x).join("<br>")}
+    </div>
+    <p class="sub" style="margin-top:14px">You will be asked about these later while completing other order checks.</p>
+    <button class="btn-primary" onclick="beginQuestions()">I'm ready</button>
+  `;
+  let s=20;
+  timerId=setInterval(()=>{
+    s--;
+    document.getElementById('timer').textContent = "00:"+String(s).padStart(2,"0");
+    if(s<=0){clearInterval(timerId); beginQuestions();}
+  },1000);
+}
+
+function beginQuestions(){
+  clearInterval(timerId);
+  index=0;
+  renderQuestion();
+}
+
+function renderQuestion(){
+  if(index >= questions.length){
+    showMemoryRecall();
+    return;
+  }
+
+  const q = questions[index];
+  questionStart = performance.now();
+
+  if(!interrupted && q.section==="Rapid Fire" && index >= Math.floor(questions.length*.55)){
+    interrupted = true;
+    setTimeout(()=>showInterrupt(), 2500);
+  }
+
+  document.getElementById('stageKicker').textContent = `${q.section} • Question ${index+1} of ${questions.length}`;
+  document.getElementById('stageTitle').textContent = q.type==="multi" ? "Find every issue" : "Good or Error?";
+  document.getElementById('progressBar').style.width = `${(index/questions.length)*82}%`;
+
+  let body = `
+    <div class="compare">
+      <div class="panel">
+        <h4>${q.guest.toUpperCase()} — ORDER</h4>
+        <ul class="items">${q.order.map(i=>`<li>${i}</li>`).join("")}</ul>
+      </div>
+      <div class="panel">
+        <h4>${q.guest.toUpperCase()} — BAG</h4>
+        <ul class="items">${q.bag.map(i=>`<li>${i}</li>`).join("")}</ul>
+      </div>
+    </div>`;
+
+  if(q.type==="multi"){
+    body += `<div class="checklist">${q.options.map((o,i)=>`
+      <label class="check"><input type="checkbox" value="${escapeHtml(o)}"> <span>${o}</span></label>
+    `).join("")}</div>
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn-primary" onclick="submitMulti()">Submit Answer</button>
+    </div>`;
+  } else {
+    body += `<div class="big-choice">
+      <button class="btn-good" onclick="submitBinary(true)">✓ GOOD</button>
+      <button class="btn-bad" onclick="submitBinary(false)">✕ ERROR</button>
+    </div>`;
+  }
+
+  document.getElementById('questionArea').innerHTML = body;
+  startTimer(q.seconds);
+}
+
+function startTimer(sec){
+  clearInterval(timerId);
+  secondsLeft=sec;
+  updateTimer();
+  timerId=setInterval(()=>{
+    secondsLeft--;
+    updateTimer();
+    if(secondsLeft<=0){
+      clearInterval(timerId);
+      recordTimeout();
+    }
+  },1000);
+}
+
+function updateTimer(){
+  const m=Math.floor(secondsLeft/60);
+  const s=secondsLeft%60;
+  const el=document.getElementById('timer');
+  el.textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  el.style.background = secondsLeft<=5 ? "#b91c1c" : "#111827";
+}
+
+function decisionTime(){
+  return (performance.now()-questionStart)/1000;
+}
+
+function submitBinary(answer){
+  clearInterval(timerId);
+  const q=questions[index];
+  const correct=answer===q.correctBinary;
+  const falseAlarm = answer===false && q.correctBinary===true;
+  results.push({
+    section:q.section, correct, timeout:false, falseAlarm,
+    time:decisionTime(), detail:q.detail
+  });
+  index++;
+  renderQuestion();
+}
+
+function submitMulti(){
+  clearInterval(timerId);
+  const q=questions[index];
+  const selected=[...document.querySelectorAll('.checklist input:checked')].map(x=>x.value);
+  const a=[...selected].sort().join("|");
+  const b=[...q.correct].sort().join("|");
+  const correct=a===b;
+  const falseAlarm = q.correct.includes("No errors") && !selected.includes("No errors");
+  results.push({
+    section:q.section, correct, timeout:false, falseAlarm,
+    time:decisionTime(), detail:q.detail
+  });
+  index++;
+  renderQuestion();
+}
+
+function recordTimeout(){
+  const q=questions[index];
+  results.push({
+    section:q.section, correct:false, timeout:true, falseAlarm:false,
+    time:q.seconds, detail:q.detail
+  });
+  index++;
+  renderQuestion();
+}
+
+function showInterrupt(){
+  clearInterval(timerId);
+  document.getElementById('interruptText').textContent =
+    "CHANGE: Jordan now needs the large fry replaced with a large fruit cup, plus 2 Polynesian sauces.";
+  document.getElementById('interruptModal').classList.remove('hidden');
+}
+
+function dismissInterrupt(){
+  document.getElementById('interruptModal').classList.add('hidden');
+  const q=questions[index];
+  if(q) startTimer(Math.max(5, secondsLeft));
+}
+
+function showMemoryRecall(){
+  clearInterval(timerId);
+  document.getElementById('stageKicker').textContent = "Final Section";
+  document.getElementById('stageTitle').textContent = "Memory Recall";
+  document.getElementById('timer').textContent = "01:00";
+  document.getElementById('progressBar').style.width = "90%";
+  document.getElementById('questionArea').innerHTML = `
+    <div class="grid">
+      <div>
+        <label>1. How many CFA sauces did Maya need?</label>
+        <select id="m1"><option value="">Choose</option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+      </div>
+      <div>
+        <label>2. What side did Jordan originally have?</label>
+        <select id="m2"><option value="">Choose</option><option>Medium Fry</option><option>Large Fry</option><option>Mac & Cheese</option><option>Fruit Cup</option></select>
+      </div>
+      <div>
+        <label>3. What changed for Jordan during the interruption?</label>
+        <select id="m3"><option value="">Choose</option><option>Large fruit cup + 2 Polynesian sauces</option><option>Medium fry + 1 CFA sauce</option><option>Large mac & cheese</option><option>Milkshake + CFA sauce</option></select>
+      </div>
+      <div>
+        <label>4. Which guest had a milkshake?</label>
+        <select id="m4"><option value="">Choose</option><option>Maya</option><option>Jordan</option><option>Alex</option><option>None</option></select>
+      </div>
+    </div>
+    <div class="btn-row" style="margin-top:18px">
+      <button class="btn-primary" onclick="finishTest()">Finish Test</button>
+    </div>
+  `;
+  secondsLeft=60;
+  timerId=setInterval(()=>{
+    secondsLeft--; updateTimer();
+    if(secondsLeft<=0){clearInterval(timerId); finishTest();}
+  },1000);
+}
+
+function finishTest(){
+  clearInterval(timerId);
+  const answers = [
+    document.getElementById('m1')?.value || "",
+    document.getElementById('m2')?.value || "",
+    document.getElementById('m3')?.value || "",
+    document.getElementById('m4')?.value || ""
+  ];
+  const key=["3","Large Fry","Large fruit cup + 2 Polynesian sauces","Alex"];
+  memoryAnswers=answers.map((a,i)=>a===key[i]);
+
+  document.getElementById('testScreen').classList.add('hidden');
+  document.getElementById('resultsScreen').classList.remove('hidden');
+  document.getElementById('topStatus').textContent="Complete";
+  renderResults();
+}
+
+function renderResults(){
+  const total=results.length;
+  const correct=results.filter(r=>r.correct).length;
+  const accuracy=total?correct/total:0;
+  const falseAlarms=results.filter(r=>r.falseAlarm).length;
+  const avgTime=total?results.reduce((a,b)=>a+b.time,0)/total:0;
+  const memory=memoryAnswers.filter(Boolean).length/memoryAnswers.length;
+
+  // Balanced overall score: 70% order accuracy + 20% memory + 10% speed bonus.
+  const targetSpeed = document.getElementById('mode').value==="hard" ? 8 : 10;
+  const speedScore=Math.max(0,Math.min(1,targetSpeed/Math.max(avgTime,0.1)));
+  const overall=(accuracy*.70)+(memory*.20)+(speedScore*.10);
+
+  document.getElementById('resultName').textContent=document.getElementById('name').value;
+  document.getElementById('scoreValue').textContent=Math.round(overall*100)+"%";
+  document.getElementById('accuracyMetric').textContent=Math.round(accuracy*100)+"%";
+  document.getElementById('falseMetric').textContent=falseAlarms;
+  document.getElementById('speedMetric').textContent=avgTime.toFixed(1)+"s";
+  document.getElementById('memoryMetric').textContent=Math.round(memory*100)+"%";
+  document.getElementById('detailMetric').textContent=Math.round(accuracy*100)+"%";
+
+  const sections=[...new Set(results.map(r=>r.section))];
+  document.getElementById('sectionTable').innerHTML=sections.map(s=>{
+    const rows=results.filter(r=>r.section===s);
+    const c=rows.filter(r=>r.correct).length;
+    const pct=Math.round((c/rows.length)*100);
+    return `<tr><td>${s}</td><td>${c}</td><td>${rows.length}</td><td class="${pct>=80?'tag-good':'tag-bad'}">${pct}%</td></tr>`;
+  }).join("") + `<tr><td>Memory / Interruptions</td><td>${memoryAnswers.filter(Boolean).length}</td><td>${memoryAnswers.length}</td><td>${Math.round(memory*100)}%</td></tr>`;
+
+  const detailMap={};
+  results.forEach(r=>{
+    r.detail.forEach(d=>{
+      if(!detailMap[d]) detailMap[d]={correct:0,total:0};
+      detailMap[d].total++;
+      if(r.correct) detailMap[d].correct++;
+    });
+  });
+  document.getElementById('detailTable').innerHTML=Object.entries(detailMap).map(([d,v])=>{
+    const pct=Math.round(v.correct/v.total*100);
+    return `<tr><td>${prettyDetail(d)}</td><td>${v.correct}</td><td>${v.total}</td><td>${pct}%</td></tr>`;
+  }).join("");
+
+  window.finalSummary={
+    name:document.getElementById('name').value,
+    mode:document.getElementById('mode').value,
+    overall:Math.round(overall*100),
+    accuracy:Math.round(accuracy*100),
+    falseAlarms,
+    avgTime:avgTime.toFixed(1),
+    memory:Math.round(memory*100),
+    date:new Date().toLocaleString(),
+    timestamp:new Date().toISOString()
+  };
+  saveScore(window.finalSummary);
+}
+
+function prettyDetail(d){
+  const map={
+    "modification":"Modifications","sauce":"Sauces","correct-order":"Correct Orders",
+    "quantity":"Quantities","cheese":"Cheese","size":"Sizes","entrée-type":"Entrée Type",
+    "missing-item":"Missing Items","drink":"Drinks","item-swap":"Wrong Item"
+  };
+  return map[d]||d;
+}
+
+function downloadResults(){
+  const s=window.finalSummary;
+  const rows=[
+    ["Team Member",s.name],
+    ["Mode",s.mode],
+    ["Date",s.date],
+    ["Overall Score",s.overall+"%"],
+    ["Order Accuracy",s.accuracy+"%"],
+    ["False Alarms",s.falseAlarms],
+    ["Average Decision Time",s.avgTime+" sec"],
+    ["Memory / Interruption",s.memory+"%"]
+  ];
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
+  const blob=new Blob([csv],{type:"text/csv"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`bagging-attention-test-${s.name.replace(/[^a-z0-9]+/gi,"-").toLowerCase()}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+
+const SCORE_STORAGE_KEY = "baggingAttentionScoresV1";
+let screenBeforeManager = "startScreen";
+
+
+function lockStore(){
+  clearInterval(timerId);
+  try{ sessionStorage.removeItem(STORE_ACCESS_SESSION_KEY); }catch(e){}
+  document.getElementById("managerLoginModal").classList.add("hidden");
+  document.getElementById("interruptModal").classList.add("hidden");
+  document.getElementById("mainApp").classList.add("hidden");
+  document.getElementById("storeGate").classList.remove("hidden");
+  document.getElementById("storeCode").value="";
+  document.getElementById("storeCodeError").classList.add("hidden");
+  setTimeout(()=>document.getElementById("storeCode").focus(),50);
+}
+
+function getScores(){
+  try{
+    const raw=localStorage.getItem(SCORE_STORAGE_KEY);
+    const data=raw ? JSON.parse(raw) : [];
+    return Array.isArray(data) ? data : [];
+  }catch(e){ return []; }
+}
+
+function saveScore(score){
+  const scores=getScores();
+  scores.push(score);
+  try{ localStorage.setItem(SCORE_STORAGE_KEY, JSON.stringify(scores)); }
+  catch(e){ console.warn("Could not save score", e); }
+}
+
+function resetTest(){
+  clearInterval(timerId);
+  index=0;
+  results=[];
+  memoryAnswers=[];
+  interrupted=false;
+  questions=[];
+  secondsLeft=0;
+  window.finalSummary=null;
+
+  document.getElementById('resultsScreen').classList.add('hidden');
+  document.getElementById('testScreen').classList.add('hidden');
+  document.getElementById('managerScreen').classList.add('hidden');
+  document.getElementById('startScreen').classList.remove('hidden');
+  document.getElementById('interruptModal').classList.add('hidden');
+  document.getElementById('managerLoginModal').classList.add('hidden');
+  document.getElementById('topStatus').textContent="Ready";
+  document.getElementById('timer').style.background="#111827";
+  document.getElementById('name').value="";
+  document.getElementById('name').focus();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function openManagerLogin(){
+  screenBeforeManager =
+    !document.getElementById('resultsScreen').classList.contains('hidden') ? "resultsScreen" :
+    !document.getElementById('testScreen').classList.contains('hidden') ? "testScreen" : "startScreen";
+  const modal=document.getElementById('managerLoginModal');
+  document.getElementById('managerCode').value="";
+  document.getElementById('managerError').classList.add('hidden');
+  modal.classList.remove('hidden');
+  setTimeout(()=>document.getElementById('managerCode').focus(),50);
+}
+
+function closeManagerLogin(){
+  document.getElementById('managerLoginModal').classList.add('hidden');
+}
+
+function verifyManagerCode(){
+  const code=document.getElementById('managerCode').value;
+  if(code !== "01911"){
+    document.getElementById('managerError').classList.remove('hidden');
+    document.getElementById('managerCode').select();
+    return;
+  }
+  closeManagerLogin();
+  showManagerDashboard();
+}
+
+function hideMainScreens(){
+  ["startScreen","testScreen","resultsScreen"].forEach(id=>document.getElementById(id).classList.add("hidden"));
+}
+
+function showManagerDashboard(){
+  hideMainScreens();
+  document.getElementById('managerScreen').classList.remove('hidden');
+  document.getElementById('topStatus').textContent="Manager Dashboard";
+  renderManagerDashboard();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function closeManagerDashboard(){
+  document.getElementById('managerScreen').classList.add('hidden');
+  const target=document.getElementById(screenBeforeManager) || document.getElementById('startScreen');
+  target.classList.remove('hidden');
+  document.getElementById('topStatus').textContent =
+    screenBeforeManager==="resultsScreen" ? "Complete" :
+    screenBeforeManager==="testScreen" ? "In Progress" : "Ready";
+}
+
+function renderManagerDashboard(){
+  const scores=getScores().slice().reverse();
+  const table=document.getElementById('managerTable');
+  const noScores=document.getElementById('noScores');
+
+  document.getElementById('dashTests').textContent=scores.length;
+  if(scores.length){
+    const avg=scores.reduce((a,s)=>a+Number(s.overall||0),0)/scores.length;
+    const acc=scores.reduce((a,s)=>a+Number(s.accuracy||0),0)/scores.length;
+    document.getElementById('dashAverage').textContent=Math.round(avg)+"%";
+    document.getElementById('dashAccuracy').textContent=Math.round(acc)+"%";
+    noScores.classList.add('hidden');
+  }else{
+    document.getElementById('dashAverage').textContent="—";
+    document.getElementById('dashAccuracy').textContent="—";
+    noScores.classList.remove('hidden');
+  }
+
+  table.innerHTML=scores.map(s=>`
+    <tr>
+      <td><strong>${escapeHtml(s.name||"")}</strong></td>
+      <td>${escapeHtml(s.date||"")}</td>
+      <td>${escapeHtml((s.mode||"standard").charAt(0).toUpperCase()+(s.mode||"standard").slice(1))}</td>
+      <td class="${Number(s.overall)>=80?'tag-good':'tag-bad'}">${Number(s.overall)||0}%</td>
+      <td>${Number(s.accuracy)||0}%</td>
+      <td>${Number(s.falseAlarms)||0}</td>
+      <td>${escapeHtml(String(s.avgTime||"0"))}s</td>
+      <td>${Number(s.memory)||0}%</td>
+    </tr>
+  `).join("");
+}
+
+function exportAllScores(){
+  const scores=getScores();
+  if(!scores.length){ alert("There are no saved scores to export."); return; }
+  const header=["Team Member","Date","Mode","Overall Score","Accuracy","False Alarms","Average Decision Time","Memory"];
+  const rows=scores.map(s=>[
+    s.name,s.date,s.mode,s.overall+"%",s.accuracy+"%",s.falseAlarms,s.avgTime+" sec",s.memory+"%"
+  ]);
+  const csv=[header,...rows].map(row=>row.map(v=>`"${String(v??"").replaceAll('"','""')}"`).join(",")).join("\n");
+  const blob=new Blob([csv],{type:"text/csv"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="bagging-attention-all-scores.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function clearAllScores(){
+  if(!confirm("Clear every saved test score from this device? This cannot be undone.")) return;
+  localStorage.removeItem(SCORE_STORAGE_KEY);
+  renderManagerDashboard();
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+</script>
+</body>
+</html>
