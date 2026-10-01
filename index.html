@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Bagging Attention Test</title>
+<title>Bagging Accuracy Challenge</title>
 <style>
   :root{
     --bg:#f5f7fb;
@@ -159,7 +159,7 @@
 <div id="storeGate" class="interrupt">
   <div class="box">
     <div class="pill">STORE ACCESS</div>
-    <h2>Bagging Attention Test</h2>
+    <h2>Bagging Accuracy Challenge</h2>
     <p style="font-size:17px;line-height:1.5;color:#475569!important;-webkit-text-fill-color:#475569!important">
       Enter the store access code to continue.
     </p>
@@ -180,22 +180,23 @@
     <div class="brand">
       <div class="logo">B</div>
       <div>
-        <h1>Bagging Attention Test</h1>
-        <div class="sub">Accuracy • Speed • Working Memory • Detail Recognition</div>
+        <h1>Bagging Accuracy Challenge</h1>
+        <div class="sub">Order Accuracy • Detail Recognition • Working Memory</div>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:8px">
       <div id="topStatus" class="pill">Ready</div>
+      <div id="syncStatus" class="pill">Sheet: not connected</div>
       <button class="btn-outline" style="padding:8px 11px;font-size:13px" onclick="lockStore()">Lock</button>
     </div>
   </div>
 
   <section id="startScreen" class="card hero">
     <div class="pill">12–15 minute assessment</div>
-    <h2>Bagging Attention-to-Detail Test</h2>
+    <h2>Bagging Accuracy Challenge</h2>
     <p>
-      This test measures how well someone notices small order differences while working quickly.
-      It includes order matching, rapid decisions, interruptions, and memory recall.
+      This challenge is designed to help us understand which bagging details are easiest to miss under pressure.
+      It includes order matching, rapid decisions, interruptions, and memory recall. It is not a pass/fail test.
     </p>
     <div class="grid grid2" style="margin:22px 0">
       <div>
@@ -210,9 +211,24 @@
         </select>
       </div>
     </div>
+    <div style="margin:20px 0;border:1px solid var(--line);border-radius:16px;padding:18px;background:#fbfcfe">
+      <h3 style="margin:0 0 12px;font-size:20px">How the Test Works</h3>
+      <ol style="margin:0;padding-left:22px;line-height:1.75">
+        <li><strong>Read carefully, but work quickly.</strong> Every order check is timed.</li>
+        <li>Compare the <strong>guest's order</strong> with what is shown in the <strong>bag</strong>.</li>
+        <li>Some orders have one or more mistakes. Other orders are <strong>completely correct</strong>.</li>
+        <li>For GOOD / ERROR questions, choose <strong>GOOD</strong> only when everything matches.</li>
+        <li>You may receive an <strong>interruption or order change</strong>. Pay attention before continuing.</li>
+        <li><strong>At the beginning, you will receive details to memorize.</strong> The next question will NOT ask about them. Keep them in mind throughout the entire test because you will recall them <strong>at the very end</strong>.</li>
+        <li>Do not write down the memorization details or save them on another device.</li>
+      </ol>
+    </div>
+    <div class="notice" style="background:#eff6ff;border-color:#bfdbfe;color:#1e40af!important;-webkit-text-fill-color:#1e40af!important">
+      <strong>Important:</strong> Accuracy matters most, but response time is also recorded. Treat each question like a live bagging situation.
+    </div>
     <div class="manager-note">
-      Manager note: use this as one readiness indicator alongside coached bagging performance.
-      It is not designed to be the sole basis for employment decisions.
+      Manager note: for the initial team rollout, use results as a coaching and baseline tool.
+      Do not treat the first attempt as pass/fail. Compare patterns across the team before setting any future benchmark.
     </div>
     <div class="btn-row" style="margin-top:18px">
       <button class="btn-primary" onclick="startTest()">Start Test</button>
@@ -235,43 +251,21 @@
   </section>
 
   <section id="resultsScreen" class="hidden">
-    <div class="card">
-      <div class="sub">Final Result</div>
-      <h2 id="resultName" style="font-size:30px;margin:4px 0 8px">Team Member</h2>
-      <div id="scoreValue" class="score">0%</div>
-      <div id="scoreLabel" class="sub">Overall attention score</div>
+    <div class="card hero" style="text-align:center">
+      <div class="pill">CHALLENGE COMPLETE</div>
+      <h2 style="font-size:38px;margin:14px 0 8px">Nice work.</h2>
+      <p style="max-width:700px;margin:0 auto;color:#6b7280!important;-webkit-text-fill-color:#6b7280!important;font-size:18px;line-height:1.6">
+        Your Bagging Accuracy Challenge has been completed and your results have been saved for leadership review.
+        This is being used to identify coaching opportunities and common bagging details that are easy to miss.
+      </p>
 
-      <div class="grid grid3" style="margin-top:22px">
-        <div class="metric"><div id="accuracyMetric" class="value">0%</div><div class="label">Accuracy</div></div>
-        <div class="metric"><div id="falseMetric" class="value">0</div><div class="label">False Alarms</div></div>
-        <div class="metric"><div id="speedMetric" class="value">0.0s</div><div class="label">Avg Decision Time</div></div>
+      <div class="notice" style="max-width:680px;margin:22px auto 0;background:#eff6ff;border-color:#bfdbfe;color:#1e40af!important;-webkit-text-fill-color:#1e40af!important;text-align:left">
+        <strong>This is not a pass/fail result.</strong> Leadership will review overall team patterns and use the information to improve bagging training and coaching.
       </div>
 
-      <div class="grid grid2" style="margin-top:16px">
-        <div class="metric"><div id="memoryMetric" class="value">0%</div><div class="label">Memory / Interruptions</div></div>
-        <div class="metric"><div id="detailMetric" class="value">0%</div><div class="label">Detail Recognition</div></div>
-      </div>
-
-      <h3 style="margin-top:26px">Section Breakdown</h3>
-      <table>
-        <thead><tr><th>Section</th><th>Correct</th><th>Total</th><th>Accuracy</th></tr></thead>
-        <tbody id="sectionTable"></tbody>
-      </table>
-
-      <h3 style="margin-top:26px">Detail Types</h3>
-      <table>
-        <thead><tr><th>Detail</th><th>Correct</th><th>Total</th><th>Accuracy</th></tr></thead>
-        <tbody id="detailTable"></tbody>
-      </table>
-
-      <div class="btn-row" style="margin-top:22px">
-        <button class="btn-primary" onclick="downloadResults()">Download Results</button>
-        <button class="btn-secondary" onclick="resetTest()">New Test</button>
+      <div class="btn-row" style="justify-content:center;margin-top:24px">
+        <button class="btn-primary" onclick="resetTest()">Finish / Next Team Member</button>
         <button class="btn-outline" onclick="openManagerLogin()">Manager Dashboard</button>
-      </div>
-      <div class="footer-note">
-        Recommended interpretation: focus on the pattern of misses, false alarms, and response speed.
-        A lower score in one area can identify what should be coached before solo bagging.
       </div>
     </div>
   </section>
@@ -281,13 +275,13 @@
       <div class="stage-head">
         <div>
           <div class="sub">Manager Access</div>
-          <div class="stage-title">Test Score Dashboard</div>
+          <div class="stage-title">Bagging Challenge Dashboard</div>
         </div>
         <button class="btn-secondary" onclick="closeManagerDashboard()">Back</button>
       </div>
 
       <div class="grid grid3" style="margin:18px 0">
-        <div class="metric"><div id="dashTests" class="value">0</div><div class="label">Tests Completed</div></div>
+        <div class="metric"><div id="dashTests" class="value">0</div><div class="label">Challenges Completed</div></div>
         <div class="metric"><div id="dashAverage" class="value">—</div><div class="label">Average Score</div></div>
         <div class="metric"><div id="dashAccuracy" class="value">—</div><div class="label">Average Accuracy</div></div>
       </div>
@@ -311,8 +305,8 @@
         <button class="btn-outline" onclick="clearAllScores()">Clear Saved Scores</button>
       </div>
       <div class="footer-note">
-        Scores are stored in this browser on this device. If the test is opened on a different iPad or computer,
-        that device will have its own score history.
+        Results are stored locally on this device and, once the Google Apps Script URL is configured, are also sent to the central Google Sheet.
+        The on-device dashboard still shows this device's local history.
       </div>
     </div>
   </section>
@@ -346,6 +340,10 @@
 <script>
 
 const STORE_ACCESS_CODE = "01911";
+
+// GOOGLE SHEET CONNECTION
+// After deploying the Apps Script web app, paste the /exec URL between the quotes below.
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw5KQGYqDMz6ArxfXSh-azayHZ8QvCJ2bBOEbfemkm3mAayeYO8Qkrtgc_ofqpJLKXr2g/exec";
 const STORE_ACCESS_SESSION_KEY = "baggingStoreAccessGranted";
 
 function verifyStoreCode(){
@@ -377,7 +375,10 @@ function initializeStoreGate(){
   }
 }
 
-window.addEventListener("DOMContentLoaded", initializeStoreGate);
+window.addEventListener("DOMContentLoaded", ()=>{
+  initializeStoreGate();
+  updateSyncBadge(isSheetConnected() ? "Sheet: connected" : "Sheet: not connected", isSheetConnected());
+});
 
 const baseQuestions = [
   {
@@ -606,17 +607,21 @@ function showMemoryIntro(){
   clearInterval(timerId);
   document.getElementById('stageKicker').textContent = "Before Section 1";
   document.getElementById('stageTitle').textContent = "Memory Challenge";
-  document.getElementById('timer').textContent = "00:20";
+  document.getElementById('timer').textContent = "00:30";
   document.getElementById('progressBar').style.width = "0%";
   document.getElementById('questionArea').innerHTML = `
+    <div class="notice" style="background:#eff6ff;border-color:#bfdbfe;color:#1e40af!important;-webkit-text-fill-color:#1e40af!important;font-size:17px">
+      <strong>These are for the END of the test.</strong><br>
+      The next question will NOT ask about these details. Remember them while you complete all of the order-checking sections. You will be tested on them during the <strong>final Memory Recall section</strong>.
+    </div>
     <div class="memory">
-      <strong>Memorize these details. Do not write them down.</strong><br><br>
+      <strong>MEMORIZE THESE DETAILS — DO NOT WRITE THEM DOWN</strong><br><br>
       ${memoryPrompt.map(x=>"• "+x).join("<br>")}
     </div>
-    <p class="sub" style="margin-top:14px">You will be asked about these later while completing other order checks.</p>
-    <button class="btn-primary" onclick="beginQuestions()">I'm ready</button>
+    <p class="sub" style="margin-top:14px">When you continue, the normal bagging questions will begin. Keep these details in your memory until the very end.</p>
+    <button class="btn-primary" onclick="beginQuestions()">I understand — begin the test</button>
   `;
-  let s=20;
+  let s=30;
   timerId=setInterval(()=>{
     s--;
     document.getElementById('timer').textContent = "00:"+String(s).padStart(2,"0");
@@ -817,26 +822,17 @@ function renderResults(){
   const avgTime=total?results.reduce((a,b)=>a+b.time,0)/total:0;
   const memory=memoryAnswers.filter(Boolean).length/memoryAnswers.length;
 
-  // Balanced overall score: 70% order accuracy + 20% memory + 10% speed bonus.
+  // Balanced manager-only score: 70% order accuracy + 20% memory + 10% speed.
   const targetSpeed = document.getElementById('mode').value==="hard" ? 8 : 10;
   const speedScore=Math.max(0,Math.min(1,targetSpeed/Math.max(avgTime,0.1)));
   const overall=(accuracy*.70)+(memory*.20)+(speedScore*.10);
 
-  document.getElementById('resultName').textContent=document.getElementById('name').value;
-  document.getElementById('scoreValue').textContent=Math.round(overall*100)+"%";
-  document.getElementById('accuracyMetric').textContent=Math.round(accuracy*100)+"%";
-  document.getElementById('falseMetric').textContent=falseAlarms;
-  document.getElementById('speedMetric').textContent=avgTime.toFixed(1)+"s";
-  document.getElementById('memoryMetric').textContent=Math.round(memory*100)+"%";
-  document.getElementById('detailMetric').textContent=Math.round(accuracy*100)+"%";
-
   const sections=[...new Set(results.map(r=>r.section))];
-  document.getElementById('sectionTable').innerHTML=sections.map(s=>{
+  const sectionBreakdown=sections.map(s=>{
     const rows=results.filter(r=>r.section===s);
     const c=rows.filter(r=>r.correct).length;
-    const pct=Math.round((c/rows.length)*100);
-    return `<tr><td>${s}</td><td>${c}</td><td>${rows.length}</td><td class="${pct>=80?'tag-good':'tag-bad'}">${pct}%</td></tr>`;
-  }).join("") + `<tr><td>Memory / Interruptions</td><td>${memoryAnswers.filter(Boolean).length}</td><td>${memoryAnswers.length}</td><td>${Math.round(memory*100)}%</td></tr>`;
+    return {section:s, correct:c, total:rows.length, accuracy:Math.round((c/rows.length)*100)};
+  });
 
   const detailMap={};
   results.forEach(r=>{
@@ -846,10 +842,13 @@ function renderResults(){
       if(r.correct) detailMap[d].correct++;
     });
   });
-  document.getElementById('detailTable').innerHTML=Object.entries(detailMap).map(([d,v])=>{
-    const pct=Math.round(v.correct/v.total*100);
-    return `<tr><td>${prettyDetail(d)}</td><td>${v.correct}</td><td>${v.total}</td><td>${pct}%</td></tr>`;
-  }).join("");
+
+  const detailBreakdown=Object.entries(detailMap).map(([d,v])=>({
+    detail:prettyDetail(d),
+    correct:v.correct,
+    total:v.total,
+    accuracy:Math.round(v.correct/v.total*100)
+  }));
 
   window.finalSummary={
     name:document.getElementById('name').value,
@@ -860,8 +859,11 @@ function renderResults(){
     avgTime:avgTime.toFixed(1),
     memory:Math.round(memory*100),
     date:new Date().toLocaleString(),
-    timestamp:new Date().toISOString()
+    timestamp:new Date().toISOString(),
+    sectionBreakdown,
+    detailBreakdown
   };
+
   saveScore(window.finalSummary);
 }
 
@@ -890,7 +892,7 @@ function downloadResults(){
   const blob=new Blob([csv],{type:"text/csv"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download=`bagging-attention-test-${s.name.replace(/[^a-z0-9]+/gi,"-").toLowerCase()}.csv`;
+  a.download=`bagging-accuracy-challenge-${s.name.replace(/[^a-z0-9]+/gi,"-").toLowerCase()}.csv`;
   a.click();
   URL.revokeObjectURL(a.href);
 }
@@ -920,11 +922,73 @@ function getScores(){
   }catch(e){ return []; }
 }
 
+
+function isSheetConnected(){
+  return GOOGLE_SCRIPT_URL &&
+         GOOGLE_SCRIPT_URL.startsWith("https://script.google.com/") &&
+         !GOOGLE_SCRIPT_URL.includes("PASTE_YOUR");
+}
+
+function updateSyncBadge(text, ok=false){
+  const el=document.getElementById("syncStatus");
+  if(!el) return;
+  el.textContent=text;
+  el.style.background=ok ? "#dcfce7" : "#f1f5f9";
+  el.style.color=ok ? "#166534" : "#334155";
+  el.style.webkitTextFillColor=ok ? "#166534" : "#334155";
+}
+
+async function sendResultToGoogleSheet(score){
+  if(!isSheetConnected()){
+    updateSyncBadge("Sheet: not connected");
+    return {ok:false, skipped:true};
+  }
+
+  updateSyncBadge("Sheet: saving…");
+
+  const payload = {
+    type:"bagging_accuracy_challenge",
+    summary:score,
+    answers:results.map((r,i)=>({
+      questionNumber:i+1,
+      section:r.section,
+      correct:r.correct,
+      timeout:r.timeout,
+      falseAlarm:r.falseAlarm,
+      responseTime:Number(r.time.toFixed ? r.time.toFixed(2) : r.time),
+      details:r.detail
+    })),
+    memoryAnswers:memoryAnswers
+  };
+
+  try{
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method:"POST",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify(payload),
+      redirect:"follow"
+    });
+
+    const data = await response.json().catch(()=>({ok:response.ok}));
+    if(response.ok && data.ok !== false){
+      updateSyncBadge("Sheet: saved", true);
+      return {ok:true};
+    }
+    throw new Error(data.error || "Save failed");
+  }catch(err){
+    console.warn("Google Sheet save failed:", err);
+    updateSyncBadge("Sheet: local only");
+    return {ok:false, error:String(err)};
+  }
+}
+
 function saveScore(score){
   const scores=getScores();
   scores.push(score);
   try{ localStorage.setItem(SCORE_STORAGE_KEY, JSON.stringify(scores)); }
   catch(e){ console.warn("Could not save score", e); }
+
+  sendResultToGoogleSheet(score);
 }
 
 function resetTest(){
@@ -1040,7 +1104,7 @@ function exportAllScores(){
   const blob=new Blob([csv],{type:"text/csv"});
   const a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download="bagging-attention-all-scores.csv";
+  a.download="bagging-accuracy-challenge-results.csv";
   a.click();
   URL.revokeObjectURL(a.href);
 }
