@@ -306,7 +306,8 @@
       </div>
       <div class="footer-note">
         Results are stored locally on this device and, once the Google Apps Script URL is configured, are also sent to the central Google Sheet.
-        The on-device dashboard still shows this device's local history.
+        The on-device dashboard still shows this device's local history.<br><br>
+        <strong>Overall score weighting:</strong> 85% order accuracy, 10% memory/interruptions, and 5% response speed.
       </div>
     </div>
   </section>
@@ -343,7 +344,7 @@ const STORE_ACCESS_CODE = "01911";
 
 // GOOGLE SHEET CONNECTION
 // After deploying the Apps Script web app, paste the /exec URL between the quotes below.
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw5KQGYqDMz6ArxfXSh-azayHZ8QvCJ2bBOEbfemkm3mAayeYO8Qkrtgc_ofqpJLKXr2g/exec";
+const GOOGLE_SCRIPT_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
 const STORE_ACCESS_SESSION_KEY = "baggingStoreAccessGranted";
 
 function verifyStoreCode(){
@@ -607,7 +608,7 @@ function showMemoryIntro(){
   clearInterval(timerId);
   document.getElementById('stageKicker').textContent = "Before Section 1";
   document.getElementById('stageTitle').textContent = "Memory Challenge";
-  document.getElementById('timer').textContent = "00:30";
+  document.getElementById('timer').textContent = "00:15";
   document.getElementById('progressBar').style.width = "0%";
   document.getElementById('questionArea').innerHTML = `
     <div class="notice" style="background:#eff6ff;border-color:#bfdbfe;color:#1e40af!important;-webkit-text-fill-color:#1e40af!important;font-size:17px">
@@ -621,7 +622,7 @@ function showMemoryIntro(){
     <p class="sub" style="margin-top:14px">When you continue, the normal bagging questions will begin. Keep these details in your memory until the very end.</p>
     <button class="btn-primary" onclick="beginQuestions()">I understand — begin the test</button>
   `;
-  let s=30;
+  let s=15;
   timerId=setInterval(()=>{
     s--;
     document.getElementById('timer').textContent = "00:"+String(s).padStart(2,"0");
@@ -822,10 +823,10 @@ function renderResults(){
   const avgTime=total?results.reduce((a,b)=>a+b.time,0)/total:0;
   const memory=memoryAnswers.filter(Boolean).length/memoryAnswers.length;
 
-  // Balanced manager-only score: 70% order accuracy + 20% memory + 10% speed.
+  // Manager-only weighted score: 85% order accuracy + 10% memory + 5% speed.
   const targetSpeed = document.getElementById('mode').value==="hard" ? 8 : 10;
   const speedScore=Math.max(0,Math.min(1,targetSpeed/Math.max(avgTime,0.1)));
-  const overall=(accuracy*.70)+(memory*.20)+(speedScore*.10);
+  const overall=(accuracy*.85)+(memory*.10)+(speedScore*.05);
 
   const sections=[...new Set(results.map(r=>r.section))];
   const sectionBreakdown=sections.map(s=>{
